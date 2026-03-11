@@ -1,12 +1,14 @@
 #!/usr/bin/env node
 
 /**
- * Postinstall script for auto-installing shell completions
+ * Postinstall script for auto-installing shell completions and global link
  *
- * This script runs automatically after npm install unless:
- * - CI=true environment variable is set
- * - OPENSPEC_NO_COMPLETIONS=1 environment variable is set
- * - dist/ directory doesn't exist (dev setup scenario)
+ * This script runs automatically after npm install and:
+ * 1. Auto-links the package globally (when installed via -g)
+ * 2. Installs shell completions unless:
+ *    - CI=true environment variable is set
+ *    - OPENSPEC_NO_COMPLETIONS=1 environment variable is set
+ *    - dist/ directory doesn't exist (dev setup scenario)
  *
  * The script never fails npm install - all errors are caught and handled gracefully.
  */
@@ -14,14 +16,50 @@
 import { promises as fs } from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { execSync } from 'child_process';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 /**
- * Check if we should skip installation
+ * Check if running with -g (global install)
  */
-function shouldSkipInstallation() {
+function isGlobalInstall() {
+  // When installed with -g, npm sets PREFIX environment variable
+  // and the package path is inside node_modules of the global npm directory
+  const npmPrefix = process.env.npm_config_prefix || process.env.PREFIX;
+  const packagePath = path.dirname(__dirname);
+  
+  if (npmPrefix && packagePath.includes(npmPrefix)) {
+    return true;
+  }
+  
+  // Alternative check: if npm_config_global is set
+  return process.env.npm_config_global === 'true';
+}
+
+/**
+ * Auto-link package globally
+ */
+function autoLink() {
+  try {
+    if (!isGlobalInstall()) {
+      return { success: false, reason: 'Not a global install' };
+    }
+
+    const packageRoot = path.join(__dirname, '..');
+    execSync('npm link', { cwd: packageRoot, stdio: 'pipe' });
+    return { success: true };
+  } catch (error) {
+    // Fail gracefully
+    return { success: false, error: error.message };
+  }
+}
+
+/**
+ * Check if we should skip completion installation
+ */
+function shouldSkipCompletion() {
   // Skip in CI environments
   if (process.env.CI === 'true' || process.env.CI === '1') {
     return { skip: true, reason: 'CI environment detected' };
@@ -112,8 +150,14 @@ async function installCompletions(shell) {
  */
 async function main() {
   try {
-    // Check if we should skip
-    const skipCheck = shouldSkipInstallation();
+    // 1. Auto-link if global install
+    const linkResult = autoLink();
+    if (linkResult.success) {
+      // Silent success - npm link is transparent
+    }
+
+    // 2. Install completions
+    const skipCheck = shouldSkipCompletion();
     if (skipCheck.skip) {
       // Silent skip - no output
       return;
