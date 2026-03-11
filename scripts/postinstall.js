@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 
 /**
- * Postinstall script for auto-installing shell completions and global link
+ * Postinstall script for building and installing shell completions
  *
  * This script runs automatically after npm install and:
- * 1. Auto-links the package globally (when installed via -g)
+ * 1. Builds the project (compiles TypeScript) if dist/ doesn't exist
  * 2. Installs shell completions unless:
  *    - CI=true environment variable is set
  *    - OPENSPEC_NO_COMPLETIONS=1 environment variable is set
@@ -182,13 +182,7 @@ async function main() {
     // 0. Build project first (compile TypeScript)
     buildProject();
 
-    // 1. Auto-link if global install
-    const linkResult = autoLink();
-    if (linkResult.success) {
-      // Silent success - npm link is transparent
-    }
-
-    // 2. Install completions
+    // 1. Install completions
     const skipCheck = shouldSkipCompletion();
     if (skipCheck.skip) {
       // Silent skip - no output
