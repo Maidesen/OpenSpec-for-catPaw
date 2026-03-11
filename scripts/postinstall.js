@@ -151,11 +151,23 @@ async function installCompletions(shell) {
 function buildProject() {
   try {
     const packageRoot = path.join(__dirname, '..');
+    // Check if dist already exists (skip build if it does)
+    const distPath = path.join(packageRoot, 'dist');
+    try {
+      const stat = require('fs').statSync(distPath);
+      if (stat.isDirectory()) {
+        // dist already exists, skip build
+        return { success: true, skipped: true };
+      }
+    } catch (e) {
+      // dist doesn't exist, proceed with build
+    }
+    
     execSync('npm run build', { cwd: packageRoot, stdio: 'pipe' });
     return { success: true };
   } catch (error) {
     // Fail gracefully but let npm install continue
-    console.warn(`⚠️  Build failed (continuing anyway): ${error.message}`);
+    console.warn(`⚠️  Build warning: ${error.message}`);
     return { success: false, error: error.message };
   }
 }
