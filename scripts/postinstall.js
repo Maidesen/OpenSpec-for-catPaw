@@ -146,10 +146,28 @@ async function installCompletions(shell) {
 }
 
 /**
+ * Build the project (TypeScript compilation)
+ */
+function buildProject() {
+  try {
+    const packageRoot = path.join(__dirname, '..');
+    execSync('npm run build', { cwd: packageRoot, stdio: 'pipe' });
+    return { success: true };
+  } catch (error) {
+    // Fail gracefully but let npm install continue
+    console.warn(`⚠️  Build failed (continuing anyway): ${error.message}`);
+    return { success: false, error: error.message };
+  }
+}
+
+/**
  * Main function
  */
 async function main() {
   try {
+    // 0. Build project first (compile TypeScript)
+    buildProject();
+
     // 1. Auto-link if global install
     const linkResult = autoLink();
     if (linkResult.success) {
