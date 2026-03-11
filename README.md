@@ -1,8 +1,6 @@
-> **🌟 美团定制版本 OpenSpec for CatPaw**
+> **🌟 美团 CatPaw 定制版本**
 >
-> 这是 OpenSpec 为美团 CatPaw IDE 定制的版本，基于官方 [OpenSpec](https://github.com/Fission-AI/OpenSpec) 项目开发。
->
-> 主要改进：支持 11 个完整工作流命令（`/opsx:*` 格式）在 CatPaw IDE 中使用。
+> OpenSpec 在美团 CatPaw IDE 中的定制版本。支持 11 个完整工作流命令（`/opsx:*` 格式）直接在 CatPaw 中使用。
 
 <p align="center">
   <a href="https://github.com/Fission-AI/OpenSpec">
@@ -193,30 +191,24 @@ When writing proposals, keep the OpenSpec philosophy in mind: we serve a wide va
 - **命令前缀统一**：所有命令使用 `/opsx:` 前缀格式
 - **中文支持**：移除了硬编码的中文，支持多语言适配
 
-### 📖 文档和使用
+### 📖 文档
 
-- 完整安装配置指南：[参考本地文档](docs/installation.md)
-- 工作流详解：[参考本地文档](docs/workflows.md)
-- CatPaw 特定说明：[参考本地文档](docs/catpaw.md)
+详见项目文档目录 `docs/` 或查看本地完整指南。
 
-### 🔗 官方项目
+### 🔗 参考
 
-- **原始项目**：https://github.com/Fission-AI/OpenSpec
-- **OpenSpec 官方文档**：https://github.com/Fission-AI/OpenSpec/tree/main/docs
+- 官方项目：https://github.com/Fission-AI/OpenSpec
 
-### 🚀 快速开始
+### 🚀 快速安装
 
 ```bash
-# 安装定制版本
-npm install -g https://github.com/Maidesen/OpenSpec-for-catPaw.git
-
-# 或使用美团内部 Git
+# 安装（美团内部）
 npm install -g ssh://git@git.sankuai.com/~wangxinchun05/openspec-for-catpaw.git
 
 # 初始化项目
 openspec init
 
-# 验证安装
+# 验证
 openspec --version
 ```
 
