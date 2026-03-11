@@ -47,8 +47,9 @@ function autoLink() {
       return { success: false, reason: 'Not a global install' };
     }
 
-    const packageRoot = path.join(__dirname, '..');
-    execSync('npm link', { cwd: packageRoot, stdio: 'pipe' });
+    // npm link should run in the package directory
+    // When postinstall runs, we don't need to specify cwd
+    execSync('npm link', { stdio: 'pipe' });
     return { success: true };
   } catch (error) {
     // Fail gracefully
@@ -163,7 +164,8 @@ function buildProject() {
       // dist doesn't exist, proceed with build
     }
     
-    execSync('npm run build', { cwd: packageRoot, stdio: 'pipe' });
+    // Don't specify cwd - use current directory (package root when postinstall runs)
+    execSync('npm run build', { stdio: 'pipe' });
     return { success: true };
   } catch (error) {
     // Fail gracefully but let npm install continue
