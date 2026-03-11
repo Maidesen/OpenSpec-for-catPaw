@@ -10,8 +10,22 @@
 
 ### 安装
 
+方式 1：克隆后安装（推荐）
+
 ```bash
-npm install -g ssh://git@git.sankuai.com/~wangxinchun05/openspec-for-catpaw.git
+git clone ssh://git@git.sankuai.com/~wangxinchun05/openspec-for-catpaw.git
+cd openspec-for-catpaw
+npm install
+npm link
+```
+
+方式 2：使用 GitHub 镜像
+
+```bash
+git clone https://github.com/Maidesen/OpenSpec-for-catPaw.git
+cd OpenSpec-for-catPaw
+npm install
+npm link
 ```
 
 ### 初始化项目
