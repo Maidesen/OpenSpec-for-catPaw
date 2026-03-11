@@ -4,11 +4,14 @@
  * Postinstall script for building and installing shell completions
  *
  * This script runs automatically after npm install and:
- * 1. Builds the project (compiles TypeScript) if dist/ doesn't exist
+ * 1. Builds the project (compiles TypeScript) during local development
  * 2. Installs shell completions unless:
  *    - CI=true environment variable is set
  *    - OPENSPEC_NO_COMPLETIONS=1 environment variable is set
  *    - dist/ directory doesn't exist (dev setup scenario)
+ *
+ * During global install (-g), the build is skipped because dist/ is already
+ * compiled and included in the npm package.
  *
  * The script never fails npm install - all errors are caught and handled gracefully.
  */
@@ -36,25 +39,6 @@ function isGlobalInstall() {
   
   // Alternative check: if npm_config_global is set
   return process.env.npm_config_global === 'true';
-}
-
-/**
- * Auto-link package globally
- */
-function autoLink() {
-  try {
-    if (!isGlobalInstall()) {
-      return { success: false, reason: 'Not a global install' };
-    }
-
-    // npm link should run in the package directory
-    // When postinstall runs, we don't need to specify cwd
-    execSync('npm link', { stdio: 'pipe' });
-    return { success: true };
-  } catch (error) {
-    // Fail gracefully
-    return { success: false, error: error.message };
-  }
 }
 
 /**
@@ -148,24 +132,32 @@ async function installCompletions(shell) {
 
 /**
  * Build the project (TypeScript compilation)
+ * Only runs during local development, not during global install
  */
 function buildProject() {
   try {
+    // Skip build during global install - dist should already be compiled
+    if (isGlobalInstall()) {
+      return { success: true, skipped: true, reason: 'Global install - skipping build' };
+    }
+
     const packageRoot = path.join(__dirname, '..');
-    // Check if dist already exists (skip build if it does)
     const distPath = path.join(packageRoot, 'dist');
+    
+    // Check if dist already exists (skip build if it does)
     try {
       const stat = require('fs').statSync(distPath);
       if (stat.isDirectory()) {
         // dist already exists, skip build
-        return { success: true, skipped: true };
+        return { success: true, skipped: true, reason: 'dist/ already exists' };
       }
     } catch (e) {
       // dist doesn't exist, proceed with build
     }
     
-    // Don't specify cwd - use current directory (package root when postinstall runs)
-    execSync('npm run build', { stdio: 'pipe' });
+    // Build with explicit package root directory
+    const packageRootPath = path.dirname(__dirname);
+    execSync('npm run build', { cwd: packageRootPath, stdio: 'pipe' });
     return { success: true };
   } catch (error) {
     // Fail gracefully but let npm install continue
@@ -179,10 +171,10 @@ function buildProject() {
  */
 async function main() {
   try {
-    // 0. Build project first (compile TypeScript)
+    // 1. Build project first (compile TypeScript) - skipped during global install
     buildProject();
 
-    // 1. Install completions
+    // 2. Install completions
     const skipCheck = shouldSkipCompletion();
     if (skipCheck.skip) {
       // Silent skip - no output
