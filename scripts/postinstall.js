@@ -1,17 +1,12 @@
 #!/usr/bin/env node
 
 /**
- * Postinstall script for building and installing shell completions
+ * Postinstall script for auto-installing shell completions
  *
- * This script runs automatically after npm install and:
- * 1. Builds the project (compiles TypeScript) during local development
- * 2. Installs shell completions unless:
- *    - CI=true environment variable is set
- *    - OPENSPEC_NO_COMPLETIONS=1 environment variable is set
- *    - dist/ directory doesn't exist (dev setup scenario)
- *
- * During global install (-g), the build is skipped because dist/ is already
- * compiled and included in the npm package.
+ * This script runs automatically after npm install unless:
+ * - CI=true environment variable is set
+ * - OPENSPEC_NO_COMPLETIONS=1 environment variable is set
+ * - dist/ directory doesn't exist (dev setup scenario)
  *
  * The script never fails npm install - all errors are caught and handled gracefully.
  */
@@ -19,32 +14,14 @@
 import { promises as fs } from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { execSync } from 'child_process';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 /**
- * Check if running with -g (global install)
+ * Check if we should skip installation
  */
-function isGlobalInstall() {
-  // When installed with -g, npm sets PREFIX environment variable
-  // and the package path is inside node_modules of the global npm directory
-  const npmPrefix = process.env.npm_config_prefix || process.env.PREFIX;
-  const packagePath = path.dirname(__dirname);
-  
-  if (npmPrefix && packagePath.includes(npmPrefix)) {
-    return true;
-  }
-  
-  // Alternative check: if npm_config_global is set
-  return process.env.npm_config_global === 'true';
-}
-
-/**
- * Check if we should skip completion installation
- */
-function shouldSkipCompletion() {
+function shouldSkipInstallation() {
   // Skip in CI environments
   if (process.env.CI === 'true' || process.env.CI === '1') {
     return { skip: true, reason: 'CI environment detected' };
@@ -131,51 +108,12 @@ async function installCompletions(shell) {
 }
 
 /**
- * Build the project (TypeScript compilation)
- * Only runs during local development, not during global install
- */
-function buildProject() {
-  try {
-    // Skip build during global install - dist should already be compiled
-    if (isGlobalInstall()) {
-      return { success: true, skipped: true, reason: 'Global install - skipping build' };
-    }
-
-    const packageRoot = path.join(__dirname, '..');
-    const distPath = path.join(packageRoot, 'dist');
-    
-    // Check if dist already exists (skip build if it does)
-    try {
-      const stat = require('fs').statSync(distPath);
-      if (stat.isDirectory()) {
-        // dist already exists, skip build
-        return { success: true, skipped: true, reason: 'dist/ already exists' };
-      }
-    } catch (e) {
-      // dist doesn't exist, proceed with build
-    }
-    
-    // Build with explicit package root directory
-    const packageRootPath = path.dirname(__dirname);
-    execSync('npm run build', { cwd: packageRootPath, stdio: 'pipe' });
-    return { success: true };
-  } catch (error) {
-    // Fail gracefully but let npm install continue
-    console.warn(`⚠️  Build warning: ${error.message}`);
-    return { success: false, error: error.message };
-  }
-}
-
-/**
  * Main function
  */
 async function main() {
   try {
-    // 1. Build project first (compile TypeScript) - skipped during global install
-    buildProject();
-
-    // 2. Install completions
-    const skipCheck = shouldSkipCompletion();
+    // Check if we should skip
+    const skipCheck = shouldSkipInstallation();
     if (skipCheck.skip) {
       // Silent skip - no output
       return;

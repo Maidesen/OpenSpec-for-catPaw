@@ -19,16 +19,7 @@ npm install
 npm link
 ```
 
-**GitHub 用户**
-
-```bash
-git clone https://github.com/Maidesen/OpenSpec-for-catPaw.git
-cd OpenSpec-for-catPaw
-npm install
-npm link
-```
-
-> 📝 **为什么需要这样装？** npm 的全局安装在 postinstall 时工作目录会被删除，导致构建失败。使用 `git clone` + `npm link` 更稳定可靠。
+> 📝 **为什么需要这样装？** 使用 `git clone` + `npm link` 本地编译后全局链接，比 `npm install -g git+url` 更稳定可靠。
 
 ### 初始化项目
 
