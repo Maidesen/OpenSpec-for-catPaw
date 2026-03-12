@@ -1,5 +1,9 @@
 # OpenSpec 美团 CatPaw 定制版
 
+> **📌 官方项目：https://github.com/Fission-AI/OpenSpec**
+> 
+> 这是官方 OpenSpec 在美团 CatPaw IDE 中的定制版本。
+
 **🌟 OpenSpec 在美团 CatPaw IDE 中的定制版本**
 
 支持 11 个完整工作流命令（`/opsx:*` 格式）直接在 CatPaw 中使用。
