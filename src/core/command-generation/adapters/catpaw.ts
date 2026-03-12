@@ -16,7 +16,7 @@ export const catpawAdapter: ToolCommandAdapter = {
   toolId: 'catpaw',
 
   getFilePath(commandId: string): string {
-    return path.join('.catpaw', 'commands', `${commandId}.md`);
+    return path.join('.catpaw', 'commands', `opsx:${commandId}.md`);
   },
 
   formatFile(content: CommandContent): string {
@@ -30,10 +30,10 @@ description: ${content.description}
 ${content.description}
 
 ## 用法
-/${content.id}
+/opsx:${content.id}
 
 ## 示例
-/${content.id} "示例参数"
+/opsx:${content.id} "示例参数"
 
 ${content.body}
 `;
