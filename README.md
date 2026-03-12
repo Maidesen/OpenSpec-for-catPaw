@@ -1,15 +1,8 @@
 # OpenSpec 美团 CatPaw 定制版
 
 > **📌 官方项目：https://github.com/Fission-AI/OpenSpec**
-
-<p align="center">
-  <a href="https://github.com/Fission-AI/OpenSpec">
-    <picture>
-      <source srcset="https://raw.githubusercontent.com/Fission-AI/OpenSpec/main/assets/openspec_bg.png">
-      <img src="https://raw.githubusercontent.com/Fission-AI/OpenSpec/main/assets/openspec_bg.png" alt="OpenSpec logo">
-    </picture>
-  </a>
-</p>
+>
+> ![OpenSpec Logo](https://raw.githubusercontent.com/Fission-AI/OpenSpec/main/assets/openspec_bg.png)
 
 <p align="center">
   <a href="https://github.com/Fission-AI/OpenSpec/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/Fission-AI/OpenSpec/actions/workflows/ci.yml/badge.svg" /></a>
