@@ -2,7 +2,9 @@
 
 > **📌 官方项目：https://github.com/Fission-AI/OpenSpec**
 >
-> ![OpenSpec Logo](https://raw.githubusercontent.com/Fission-AI/OpenSpec/main/assets/openspec_bg.png)
+> 这是官方 OpenSpec 在美团 CatPaw IDE 中的定制版本。
+
+![OpenSpec Logo](https://raw.githubusercontent.com/Fission-AI/OpenSpec/main/assets/openspec_bg.png)
 
 <p align="center">
   <a href="https://github.com/Fission-AI/OpenSpec/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/Fission-AI/OpenSpec/actions/workflows/ci.yml/badge.svg" /></a>
@@ -10,8 +12,6 @@
   <a href="https://github.com/Fission-AI/OpenSpec/blob/main/LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square" /></a>
   <a href="https://discord.gg/YctCnvvshC"><img alt="Discord" src="https://img.shields.io/discord/1411657095639601154?style=flat-square&logo=discord&logoColor=white&label=Discord&suffix=%20online" /></a>
 </p>
-
-> 这是官方 OpenSpec 在美团 CatPaw IDE 中的定制版本。
 
 **🌟 OpenSpec 在美团 CatPaw IDE 中的定制版本**
 
